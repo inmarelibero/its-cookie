@@ -77,7 +77,7 @@ function handleRegistrationForm($email, $password, $passwordConfirm)
 function emailExists($email, array $users): bool
 {
     foreach ($users as $user) {
-        if ($user[0] === $email) {
+        if ($user['email'] === $email) {
             return true;
         }
     }
@@ -89,7 +89,10 @@ function addUser($email, $password)
 {
     $users = getUsers();
 
-    $users[] = [$email, $password];
+    $users[] = [
+        'email' => $email,
+        'password' => $password,
+    ];
 
     saveUsers($users);
 }
@@ -97,12 +100,9 @@ function addUser($email, $password)
 function saveUsers(array $users)
 {
     $fileManager = new FileManager();
-    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.csv');
-    $file = fopen($usersFilename, 'w');
+    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.json');
 
-    foreach ($users as $user) {
-        fputcsv($file, $user);
-    }
+    file_put_contents($usersFilename, json_encode($users));
 }
 
 /**
@@ -115,7 +115,7 @@ function checkCredentials($email, $password)
     $users = getUsers();
 
     foreach ($users as $user) {
-        if ($email === $user[0] && $password === $user[1]) {
+        if ($email === $user['email'] && $password === $user['password']) {
             return true;
         }
     }
@@ -126,18 +126,18 @@ function checkCredentials($email, $password)
 /**
  * @return array
  */
-function getUsers()
+function getUsers(): array
 {
     $fileManager = new FileManager();
-    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.csv');
+    $fileManager->createFileIfNotExists('../users.json');
 
-    $users = [];
+    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.json');
+    $content = file_get_contents($usersFilename);
 
-    if (($handle = fopen($usersFilename, "r")) !== FALSE) {
-        while (($currentUser = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $users[] = $currentUser;
-        }
-        fclose($handle);
+    $users = json_decode($content, true);
+
+    if ($users === null) {
+        return [];
     }
 
     return $users;

@@ -26,6 +26,7 @@ class FileManager
     public function buildPathRelativeToDocumentRootParent(string $filename): string
     {
         $documentRoot = $_SERVER['DOCUMENT_ROOT'];
+
         $path = $documentRoot . '/../' . $filename;
 
         return $path;

@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /**
      * valido gli input
      */
-    $error = null;
 
     try {
         $result = handleRegistrationForm($email, $password, $passwordConfirm);
@@ -56,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-6 offset-3">
                     <h1>Registrazione</h1>
 
-                    <?php if ($error !== null): ?>
+                    <?php if (isset($error) && $error !== null): ?>
                         <p style="color: red;">
                             <?= $error; ?>
                         </p>
