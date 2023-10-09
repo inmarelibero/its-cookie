@@ -20,9 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = handleLoginForm($email, $password);
 
     if ($result === true) {
-        writeLogLogin($email);
-//        $logger = new Logger();
-//        $logger->writeLogLogin($email);
+        $logger = new Logger();
+        $logger->writeLogLogin($email);
 
 
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;

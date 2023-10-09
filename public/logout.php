@@ -2,7 +2,8 @@
 
 require_once('../init.php');
 
-writeLogLogout(
+$logger = new Logger();
+$logger->writeLogLogout(
     getEmailOfAuthenticatedUser()
 );
 

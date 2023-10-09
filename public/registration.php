@@ -26,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = $exception->getMessage();
     }
 
-    writeLogRegistration($email);
+    $logger = new Logger();
+    $logger->writeLogRegistration($email);
     $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
 

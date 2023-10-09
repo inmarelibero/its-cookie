@@ -96,7 +96,8 @@ function addUser($email, $password)
 
 function saveUsers(array $users)
 {
-    $usersFilename = buildPathRelativeToDocumentRootParent('users.csv');
+    $fileManager = new FileManager();
+    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.csv');
     $file = fopen($usersFilename, 'w');
 
     foreach ($users as $user) {
@@ -127,7 +128,8 @@ function checkCredentials($email, $password)
  */
 function getUsers()
 {
-    $usersFilename = buildPathRelativeToDocumentRootParent('users.csv');
+    $fileManager = new FileManager();
+    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.csv');
 
     $users = [];
 
@@ -238,99 +240,4 @@ function getQueryParameter(string $name): ?string
     }
 
     return null;
-}
-
-/**
- * @param string $email
- * @return void
- */
-function writeLogLogin(string $email)
-{
-    writeLog("LOGIN", [$email]);
-}
-
-/**
- * @param string $email
- * @return void
- */
-function writeLogLogout(string $email)
-{
-    writeLog('LOGOUT', [$email]);
-}
-
-/**
- * @param string $email
- * @return void
- */
-function writeLogRegistration(string $email)
-{
-    writeLog('REGISTRATION', [$email]);
-}
-
-/**
- * @param string $event
- * @param array $tags
- * @return void
- */
-function writeLog(string $event, array $tags = [])
-{
-    $logsFilename = 'logs.txt';
-
-    createFileIfNotExists($logsFilename);
-
-    // costruisco il messaggio da scrivere
-    $row = formatLogMessage($event, $tags);
-
-    // scrivo il messaggio di log
-    file_put_contents(
-        buildPathRelativeToDocumentRootParent($logsFilename),
-        $row,
-        FILE_APPEND | LOCK_EX
-    );
-}
-
-/**
- * @param string $filename path relativo alla cartella padre di document root
- * @return void
- */
-function createFileIfNotExists(string $filename)
-{
-    $path = buildPathRelativeToDocumentRootParent($filename);
-
-    // creo il file se non esiste
-    if (!file_exists($path)) {
-        file_put_contents($path, '');
-    }
-}
-
-/**
- *
- *
- * @param string $filename
- * @return string
- */
-function buildPathRelativeToDocumentRootParent(string $filename): string
-{
-    $documentRoot = $_SERVER['DOCUMENT_ROOT'];
-    $path = $documentRoot . '/../' . $filename;
-
-    return $path;
-}
-
-/**
- * @param string $message
- * @param array $tags array piano di stringhe usate come tag
- * @return string
- */
-function formatLogMessage(string $message, array $tags = []): string
-{
-    $message = date('[Y-m-d H:i:s]') . ' ' . $message;
-
-    if (count($tags) > 0) {
-        $message .= ' [';
-        $message  = $message . implode(', ', $tags);
-        $message .= ']';
-    }
-
-    return $message . PHP_EOL;
 }
