@@ -100,7 +100,7 @@ function addUser($email, $password)
 function saveUsers(array $users)
 {
     $fileManager = new FileManager();
-    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.json');
+    $usersFilename = $fileManager->buildPathRelativeToProjectRoot('users.json');
 
     file_put_contents($usersFilename, json_encode($users));
 }
@@ -131,7 +131,7 @@ function getUsers(): array
     $fileManager = new FileManager();
     $fileManager->createFileIfNotExists('users.json');
 
-    $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.json');
+    $usersFilename = $fileManager->buildPathRelativeToProjectRoot('users.json');
     $content = file_get_contents($usersFilename);
 
     $users = json_decode($content, true);

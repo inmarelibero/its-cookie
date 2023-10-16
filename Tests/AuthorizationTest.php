@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-final class AuthorizationlTest extends TestCase
+final class AuthorizationTest extends TestCase
 {
     /**
      * @return void

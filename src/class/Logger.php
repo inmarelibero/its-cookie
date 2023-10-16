@@ -47,7 +47,7 @@ class Logger
         // scrivo il messaggio di log
         $fileManager = new FileManager();
         file_put_contents(
-            $fileManager->buildPathRelativeToDocumentRootParent($logsFilename),
+            $fileManager->buildPathRelativeToProjectRoot($logsFilename),
             $row,
             FILE_APPEND | LOCK_EX
         );

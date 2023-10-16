@@ -9,7 +9,7 @@ class FileManager
      */
     public function createFileIfNotExists(string $filename)
     {
-        $path = $this->buildPathRelativeToDocumentRootParent($filename);
+        $path = $this->buildPathRelativeToProjectRoot($filename);
 
         // creo il file se non esiste
         if (!file_exists($path)) {
@@ -23,16 +23,24 @@ class FileManager
      * @param string $filename
      * @return string
      */
-    public function buildPathRelativeToDocumentRootParent(string $filename): string
+    public function buildPathRelativeToProjectRoot(string $filename): string
     {
-        $documentRoot = $_SERVER['DOCUMENT_ROOT'];
-
-        if ($documentRoot === '') {
-            $documentRoot = __DIR__.'/../../public';
-        }
+        $documentRoot = $this->getDocumentRoot();
 
         $path = $documentRoot . '/../' . $filename;
 
         return $path;
+    }
+
+    /**
+     * @return string
+     */
+    private function getDocumentRoot(): string
+    {
+        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
+            return $_SERVER['DOCUMENT_ROOT'];
+        }
+
+        return __DIR__.'/../../public';
     }
 }
