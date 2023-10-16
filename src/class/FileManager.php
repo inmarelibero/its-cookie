@@ -27,6 +27,10 @@ class FileManager
     {
         $documentRoot = $_SERVER['DOCUMENT_ROOT'];
 
+        if ($documentRoot === '') {
+            $documentRoot = __DIR__.'/../../public';
+        }
+
         $path = $documentRoot . '/../' . $filename;
 
         return $path;

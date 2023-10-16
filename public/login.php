@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $logger = new Logger();
         $logger->writeLogLogin($email);
 
-
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
         authenticateUser($email);

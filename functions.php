@@ -129,7 +129,7 @@ function checkCredentials($email, $password)
 function getUsers(): array
 {
     $fileManager = new FileManager();
-    $fileManager->createFileIfNotExists('../users.json');
+    $fileManager->createFileIfNotExists('users.json');
 
     $usersFilename = $fileManager->buildPathRelativeToDocumentRootParent('users.json');
     $content = file_get_contents($usersFilename);
