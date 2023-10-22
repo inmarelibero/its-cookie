@@ -1,11 +1,11 @@
-<?php require_once('../init.php'); ?>
+<?php require_once(__DIR__.'/../init.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
-    <?php printHead(); ?>
+    <?php $templateHelper->printHead(); ?>
 
     <body>
-        <?php require_once( '../_menu.php') ?>
+        <?php require_once(__DIR__ . '/../templates/_menu.php') ?>
 
         <h1>Homepage</h1>
     </body>

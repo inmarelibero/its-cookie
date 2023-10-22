@@ -3,3 +3,4 @@ logs.txt
 users.csv
 users.json
 public/debug.php
+Tests/var/*

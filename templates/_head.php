@@ -19,5 +19,5 @@ if (!isset($metaTitle)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $metaTitle ?></title>
 
-    <?php require_once(__DIR__ . '/head_assets.php') ?>
+    <?php require_once(__DIR__ . '/_head_assets.php') ?>
 </head>

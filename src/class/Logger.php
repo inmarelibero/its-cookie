@@ -2,6 +2,24 @@
 
 class Logger
 {
+    private $fileManager;
+
+    /**
+     *
+     */
+    public function __construct(App $app)
+    {
+        $this->fileManager = new FileManager($app);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getLogFilename(): string
+    {
+        return 'logs.txt';
+    }
+
     /**
      * @param string $email
      * @return void
@@ -36,18 +54,16 @@ class Logger
      */
     private function writeLog(string $event, array $tags = [])
     {
-        $logsFilename = 'logs.txt';
+        $logsFilename = self::getLogFilename();
 
-        $fileManager = new FileManager();
-        $fileManager->createFileIfNotExists($logsFilename);
+        $this->fileManager->createFileIfNotExists($logsFilename);
 
         // costruisco il messaggio da scrivere
         $row = $this->formatLogMessage($event, $tags);
 
         // scrivo il messaggio di log
-        $fileManager = new FileManager();
         file_put_contents(
-            $fileManager->buildPathRelativeToProjectRoot($logsFilename),
+            $this->fileManager->buildPathRelativeToProjectRoot($logsFilename),
             $row,
             FILE_APPEND | LOCK_EX
         );

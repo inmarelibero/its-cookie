@@ -19,19 +19,19 @@
                 </li>
 
                 <li class="nav-item">
-                    <?php if (!isUserAuthenticated()): ?>
+                    <?php if (!$authenticationManager->isUserAuthenticated()): ?>
                         <a class="nav-link active" aria-current="page" href="/login.php">
                             Login
                         </a>
                     <?php endif; ?>
-                    <?php if (isUserAuthenticated()): ?>
+                    <?php if ($authenticationManager->isUserAuthenticated()): ?>
                         <a class="nav-link active" aria-current="page" href="/logout.php">
-                            Loggato come <?php echo getEmailOfAuthenticatedUser(); ?> (LOGOUT)
+                            Loggato come <?php echo $authenticationManager->getEmailOfAuthenticatedUser(); ?> (LOGOUT)
                         </a>
                     <?php endif; ?>
                 </li>
 
-                <?php if (!isUserAuthenticated()): ?>
+                <?php if (!$authenticationManager->isUserAuthenticated()): ?>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/registration.php">
                             Registrati

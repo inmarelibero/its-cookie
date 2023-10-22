@@ -1,11 +1,13 @@
 <?php
 
-require_once('../init.php');
+require_once(__DIR__.'/../init.php');
 
-$logger = new Logger();
+$logger = new Logger($app);
 $logger->writeLogLogout(
-    getEmailOfAuthenticatedUser()
+    $authenticationManager->getEmailOfAuthenticatedUser()
 );
 
 session_destroy();
-redirect();
+
+$redirectManager = new RedirectManager($authenticationManager);
+$redirectManager->redirect();

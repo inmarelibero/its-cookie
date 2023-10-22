@@ -1,10 +1,22 @@
 <?php
 
-
+/**
+ *
+ */
 class FileManager
 {
+    private $app;
+
     /**
-     * @param string $filename path relativo alla cartella padre di document root
+     *
+     */
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @param string $filename path relativo alla project root
      * @return void
      */
     public function createFileIfNotExists(string $filename)
@@ -25,9 +37,9 @@ class FileManager
      */
     public function buildPathRelativeToProjectRoot(string $filename): string
     {
-        $documentRoot = $this->getDocumentRoot();
+        $projectRoot = $this->getProjectRoot();
 
-        $path = $documentRoot . '/../' . $filename;
+        $path = $projectRoot . '/' . $filename;
 
         return $path;
     }
@@ -35,12 +47,12 @@ class FileManager
     /**
      * @return string
      */
-    private function getDocumentRoot(): string
+    public function getProjectRoot(): string
     {
-        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
-            return $_SERVER['DOCUMENT_ROOT'];
+        if ($this->app->isTest()) {
+            return __DIR__.'/../../Tests/cache';
         }
 
-        return __DIR__.'/../../public';
+        return __DIR__.'/../..';
     }
 }

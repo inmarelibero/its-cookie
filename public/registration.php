@@ -1,10 +1,10 @@
-<?php require_once('../init.php'); ?>
+<?php require_once(__DIR__.'/../init.php'); ?>
 
 <?php
 
 // build the value for the form "action" attribute
-$formAction = buildPathWithQueryParameters('registration.php', [
-    '_referer' => getQueryParameter('_referer'),
+$formAction = RequestHelper::buildPathWithQueryParameters('registration.php', [
+    '_referer' => RequestHelper::getQueryParameter('_referer'),
 ]);
 
 /*
@@ -18,37 +18,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /**
      * valido gli input
      */
-
+    $registrationHandler = new RegistrationHandler($authenticationManager);
     try {
         $result = handleRegistrationForm($email, $password, $passwordConfirm);
     } catch (Exception $exception) {
         $error = $exception->getMessage();
     }
 
-    $logger = new Logger();
+    $logger = new Logger($app);
     $logger->writeLogRegistration($email);
     $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
 
     // faccio login
-    authenticateUser($email);
+    $authenticationManager->authenticateUser($email);
 
     // redirect
+    $redirectManager = new RedirectManager($authenticationManager);
+
     if ($referer !== null) {
-        redirect($referer);
+        $redirectManager->redirect($referer);
     }
 
-    redirect();
+    $redirectManager->redirect();
 }
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
-    <?php printHead(); ?>
+    <?php $templateHelper->printHead(); ?>
 
     <body>
-        <?php require_once('../_menu.php') ?>
+        <?php require_once(__DIR__ . '/../templates/_menu.php') ?>
 
         <div class="container">
             <div class="row">

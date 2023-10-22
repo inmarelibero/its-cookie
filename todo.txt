@@ -57,13 +57,10 @@
 
 16) utilizzare gli oggetti: introdurre AuthenticationProvider, con le eccezioni
 
-17) Implementare un'area di amministrazione che elenca tutti gli utenti della piattaforma, con la possibilità di:
+17) implementare la classe User e usare quella per modellare gli utenti della piattaforma
+
+18) Implementare un'area di amministrazione che elenca tutti gli utenti della piattaforma, con la possibilità di:
+    - memorizzare i dati in database
     - eliminare un utente
     - disabilitare un utente
     - cambiare la password di un utente
-    - realizzare uno script da terminale che promuove un utente come Amministratore, o gli toglie il ruolo
-
-18) Implementare le dinamiche di un blog:
-    - ogni utente registrato può pubblicare un post
-    - visualizzazione dei post in homepage in ordine dal più recente
-    - implementare la paginazione dei post

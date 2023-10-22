@@ -1,21 +1,26 @@
 <?php
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+require_once(__DIR__.'/BaseTestCase.php');
 
-final class AuthorizationTest extends TestCase
+/**
+ *
+ */
+final class AuthorizationTest extends BaseTestCase
 {
     /**
      * @return void
      */
     public function testAuthenticateUser(): void
     {
-        $this->assertFalse(isUserAuthenticated());
+        $authenticationManager = new AuthenticationManager($this->getApp());
+        $this->assertFalse($authenticationManager->isUserAuthenticated());
 
         // do login
-        authenticateUser('b@example.com');
+        $authenticationManager->authenticateUser('bar@example.com');
 
-        $this->assertTrue(isUserAuthenticated());
+        $this->assertTrue($authenticationManager->isUserAuthenticated());
+        $this->assertEquals('bar@example.com', $authenticationManager->getEmailOfAuthenticatedUser());
     }
 
     /**
@@ -23,9 +28,29 @@ final class AuthorizationTest extends TestCase
      */
     public function testHandleLoginForm(): void
     {
+        $authenticationManager = new AuthenticationManager($this->getApp());
+        $loginHandler = new LoginHandler($authenticationManager);
+
         // do login
         $this->assertTrue(
-            handleLoginForm('a@example.com', 'bar')
+            $loginHandler->handleLoginForm('bar@example.com', 'bar')
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function testHandleRegistrationForm(): void
+    {
+        $authenticationManager = new AuthenticationManager($this->getApp());
+        $registrationHandler = new RegistrationHandler($authenticationManager);
+
+        // register
+        try {
+            $registrationHandler->handleRegistrationForm('foo@example.com', 'foo', 'foo');
+            $this->assertTrue(true);
+        } catch (Exception $exception) {
+            $this->fail(sprintf('Registration form handler failed with error "%s"', $exception->getMessage()));
+        }
     }
 }

@@ -1,10 +1,10 @@
-<?php require_once('../init.php'); ?>
-
 <?php
 
+require_once(__DIR__.'/../init.php');
+
 // build the value for the form "action" attribute
-$formAction = buildPathWithQueryParameters('login.php', [
-    '_referer' => getQueryParameter('_referer'),
+$formAction = RequestHelper::buildPathWithQueryParameters('login.php', [
+    '_referer' => RequestHelper::getQueryParameter('_referer'),
 ]);
 
 /*
@@ -17,17 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /**
      * valido gli input
      */
-    $result = handleLoginForm($email, $password);
+    $loginHandler = new LoginHandler($authenticationManager);
+    $result = $loginHandler->handleLoginForm($email, $password);
 
     if ($result === true) {
-        $logger = new Logger();
+        $logger = new Logger($app);
         $logger->writeLogLogin($email);
 
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
-        authenticateUser($email);
+        $authenticationManager->authenticateUser($email);
 
-        redirect($referer);
+        $redirectManager = new RedirectManager($authenticationManager);
+        $redirectManager->redirect($referer);
     }
 }
 ?>
@@ -35,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-    <?php printHead(); ?>
+    <?php $templateHelper->printHead(); ?>
 
     <body>
-        <?php require_once('../_menu.php') ?>
+        <?php require_once(__DIR__ . '/../templates/_menu.php') ?>
 
         <div class="container">
             <div class="row">
