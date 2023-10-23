@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      */
     $registrationHandler = new RegistrationHandler($authenticationManager);
     try {
-        $result = handleRegistrationForm($email, $password, $passwordConfirm);
+        $result = $registrationHandler->handleRegistrationForm($email, $password, $passwordConfirm);
     } catch (Exception $exception) {
         $error = $exception->getMessage();
     }

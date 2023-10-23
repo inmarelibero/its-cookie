@@ -85,7 +85,7 @@ class AuthenticationManager
     }
 
     /**
-     * @return array
+     * @return User[]
      */
     public function getUsers(): array
     {
