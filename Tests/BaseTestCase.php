@@ -15,6 +15,9 @@ class BaseTestCase extends TestCase
      */
     protected function setUp(): void
     {
+        session_start();
+        session_destroy();
+
         $this->app = new App('test');
         $this->fileManager = new FileManager($this->app);
 
@@ -52,7 +55,7 @@ class BaseTestCase extends TestCase
         file_put_contents($this->fileManager->buildPathRelativeToProjectRoot('users.json'), json_encode([
             [
                 'email' => 'bar@example.com',
-                'password' => 'bar',
+                'password' => md5('bar'),
             ]
         ]));
 

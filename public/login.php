@@ -12,21 +12,26 @@ $formAction = RequestHelper::buildPathWithQueryParameters('login.php', [
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $plainPassword = $_POST['password'];
 
     /**
      * valido gli input
      */
     $loginHandler = new LoginHandler($authenticationManager);
-    $result = $loginHandler->handleLoginForm($email, $password);
 
-    if ($result === true) {
+    try {
+        $user = $loginHandler->handleLoginForm($email, $plainPassword);
+    } catch (Exception $exception) {
+        $error = $exception->getMessage();
+    }
+
+    if (isset($user)) {
         $logger = new Logger($app);
         $logger->writeLogLogin($email);
 
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
-        $authenticationManager->authenticateUser($email);
+        $authenticationManager->authenticateUser($user);
 
         $redirectManager = new RedirectManager($authenticationManager);
         $redirectManager->redirect($referer);
@@ -47,12 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-6 offset-3">
                     <h1>Login</h1>
 
-                    <?php if (isset($result) && is_array($result)): ?>
-                        <?php foreach ($result as $error): ?>
-                            <p style="color: red;">
-                                <?= $error; ?>
-                            </p>
-                        <?php endforeach; ?>
+                    <?php if (isset($error)): ?>
+                        <p style="color: red;">
+                            <?= $error; ?>
+                        </p>
                     <?php endif; ?>
                     <form method="POST" action="<?= $formAction ?>">
                         <div class="mb-3">

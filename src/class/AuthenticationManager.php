@@ -13,42 +13,37 @@ class AuthenticationManager
     }
 
     /**
-     * @param $email
-     * @param $password
+     * @param User $user
      * @return void
      */
-    public function addUser($email, $password)
+    public function addUser(User $user): void
     {
         $users = $this->getUsers();
 
-        $users[] = [
-            'email' => $email,
-            'password' => $password,
-        ];
+        $users[] = $user;
 
-        $this->saveUsers($users);
+        $this->persistUsers($users);
     }
 
     /**
-     * @param $email
+     * @param User $user
      * @return void
      */
-    public function authenticateUser($email)
+    public function authenticateUser(User $user): void
     {
-        $_SESSION['email'] = $email;
+        $_SESSION['email'] = $user->getEmail();
     }
 
     /**
-     * @param $email
-     * @param $password
+     * @param User $user
      * @return bool
      */
-    public function checkCredentials($email, $password): bool
+    public function checkCredentials(User $user): bool
     {
         $users = $this->getUsers();
 
-        foreach ($users as $user) {
-            if ($email === $user['email'] && $password === $user['password']) {
+        foreach ($users as $currentUser) {
+            if ($user->getEmail() === $currentUser->getEmail() && $user->hasHashedPassword($currentUser->getHashedPassword())) {
                 return true;
             }
         }
@@ -57,14 +52,13 @@ class AuthenticationManager
     }
 
     /**
-     * @param $email
-     * @param array $users
+     * @param string $email
      * @return bool
      */
-    public function emailExists($email, array $users): bool
+    public function emailExists(string $email): bool
     {
-        foreach ($users as $user) {
-            if ($user['email'] === $email) {
+        foreach ($this->getUsers() as $user) {
+            if ($user->hasEmail($email)) {
                 return true;
             }
         }
@@ -94,10 +88,15 @@ class AuthenticationManager
         $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
         $content = file_get_contents($usersFilename);
 
-        $users = json_decode($content, true);
+        $usersData = json_decode($content, true);
 
-        if ($users === null) {
+        if ($usersData === null) {
             return [];
+        }
+
+        $users = [];
+        foreach ($usersData as $user) {
+            $users[] = new User($user['email'], $user['password']);
         }
 
         return $users;
@@ -106,19 +105,28 @@ class AuthenticationManager
     /**
      * @return bool
      */
-    public function isUserAuthenticated()
+    public function isUserAuthenticated(): bool
     {
         return array_key_exists('email', $_SESSION);
     }
 
     /**
-     * @param array $users
+     * @param User[] $users
      * @return void
      */
-    private function saveUsers(array $users)
+    private function persistUsers(array $users): void
     {
         $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
 
-        file_put_contents($usersFilename, json_encode($users));
+        $dataToWrite = [];
+
+        foreach ($users as $user) {
+            $dataToWrite[] = [
+                'email' => $user->getEmail(),
+                'password' => $user->getHashedPassword(),
+            ];
+        }
+
+        file_put_contents($usersFilename, json_encode($dataToWrite));
     }
 }

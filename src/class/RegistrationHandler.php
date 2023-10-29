@@ -13,13 +13,13 @@ class RegistrationHandler
     }
 
     /**
+     *
      * @param $email
      * @param $password
      * @param $passwordConfirm
      * @throws Exception
-     * @return true|array true if user can be authenticated, an array of strings representing errors if not
      */
-    function handleRegistrationForm($email, $password, $passwordConfirm)
+    function handleRegistrationForm($email, $password, $passwordConfirm): User
     {
         if (empty($email)) {
             throw new Exception('Campo email obbligatorio');
@@ -41,11 +41,16 @@ class RegistrationHandler
         $users = $this->authenticationManager->getUsers();
 
         // se l'email esiste già: errore
-        if ($this->authenticationManager->emailExists($email, $users)) {
+        if ($this->authenticationManager->emailExists($email)) {
             throw new Exception('Email già esistente');
         }
 
         // inserisco un nuovo utente
-        $this->authenticationManager->addUser($email, $password);
+//        $user = new User($email, $password);
+        $user = User::buildWithPlainPassword($email, $password);
+
+        $this->authenticationManager->addUser($user);
+
+        return $user;
     }
 }
