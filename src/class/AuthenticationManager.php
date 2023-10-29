@@ -57,6 +57,16 @@ class AuthenticationManager
     public function changePassword(User $user, string $newPlainPassword): void
     {
         // @TODO: implement logic
+        if (empty($newPlainPassword)) {
+            throw new Exception('Campo password obbligatorio');
+        }
+
+        if (strlen($newPlainPassword) < 3) {
+            throw new Exception('Password troppo corta');
+        }
+
+        $user->setPlainPassword($newPlainPassword);
+        $this->persistUser($user);
     }
 
     /**
@@ -66,6 +76,17 @@ class AuthenticationManager
     public function deleteUser(User $user): void
     {
         // @TODO: implement logic
+        $connection = $this->databaseManager->createConnection();
+
+        $sql = "DELETE FROM user WHERE id = :id";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'id' => $user->getId(),
+        ]);
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
     }
 
     /**
@@ -219,5 +240,15 @@ class AuthenticationManager
         if (!$result) {
             die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
         }
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function toggleEnabled(User $user): void
+    {
+        $user->setIsEnabled(!$user->isEnabled());
+        $this->persistUser($user);
     }
 }

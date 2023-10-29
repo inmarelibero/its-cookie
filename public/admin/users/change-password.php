@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      */
     try {
         // @TODO: change password (use a method of AuthenticationProvider)
+        $authenticationManager->changePassword($user, $password);
 
         //
         $redirectManager->redirect('/admin/users/index.php');

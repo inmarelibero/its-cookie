@@ -39,6 +39,9 @@ class LoginHandler
         }
 
         // @TODO: prevent login if user is not enabled
+        if ($user->isEnabled() !== true) {
+            throw new Exception('Utente non abilitato');
+        }
 
         if ($this->authenticationManager->checkCredentials($user, $email, $plainPassword)) {
             return $user;

@@ -11,6 +11,7 @@
     }
 
     // @TODO: is user is enabled, set it as disabled; viceversa otherwise
+    $authenticationManager->toggleEnabled($user);
 
     //
     $redirectManager->redirect('/admin/users/index.php');

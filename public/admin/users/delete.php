@@ -10,7 +10,8 @@
         $redirectManager->redirect('/admin/users/index.php');
     }
 
-    // @TODO: delete user
+// @TODO: delete user
+    $authenticationManager->deleteUser($user);
 
     //
     $redirectManager->redirect('/admin/users/index.php');
