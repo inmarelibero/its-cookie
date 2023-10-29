@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($user)) {
         $logger = new Logger($app);
-        $logger->writeLogRegistration($email);
+        $logger->writeLogRegistration($user);
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
         // faccio login

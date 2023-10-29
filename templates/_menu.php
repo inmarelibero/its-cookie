@@ -26,7 +26,7 @@
                     <?php endif; ?>
                     <?php if ($authenticationManager->isUserAuthenticated()): ?>
                         <a class="nav-link active" aria-current="page" href="/logout.php">
-                            Loggato come <?php echo $authenticationManager->getEmailOfAuthenticatedUser(); ?> (LOGOUT)
+                            Loggato come <?php echo $authenticationManager->getAuthenticatedUser()->getEmail(); ?> (LOGOUT)
                         </a>
                     <?php endif; ?>
                 </li>

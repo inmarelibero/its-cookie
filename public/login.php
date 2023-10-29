@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($user)) {
         $logger = new Logger($app);
-        $logger->writeLogLogin($email);
+        $logger->writeLogLogin($user);
 
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 

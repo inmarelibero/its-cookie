@@ -3,7 +3,7 @@ session_start();
 
 require_once(__DIR__.'/src/class/App.php');
 require_once(__DIR__.'/src/class/AuthenticationManager.php');
-require_once(__DIR__.'/src/class/FileManager.php');
+require_once(__DIR__.'/src/class/DatabaseManager.php');
 require_once(__DIR__.'/src/class/Logger.php');
 require_once(__DIR__.'/src/class/LoginHandler.php');
 require_once(__DIR__.'/src/class/PasswordHasher.php');

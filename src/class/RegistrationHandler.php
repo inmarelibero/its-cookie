@@ -13,10 +13,10 @@ class RegistrationHandler
     }
 
     /**
-     *
      * @param $email
      * @param $password
      * @param $passwordConfirm
+     * @return User
      * @throws Exception
      */
     function handleRegistrationForm($email, $password, $passwordConfirm): User

@@ -2,49 +2,41 @@
 
 class Logger
 {
-    private $fileManager;
+    private $databaseManager;
 
     /**
      *
      */
     public function __construct(App $app)
     {
-        $this->fileManager = new FileManager($app);
+        $this->databaseManager = new DatabaseManager($app);
     }
 
     /**
-     * @return string
-     */
-    public static function getLogFilename(): string
-    {
-        return 'logs.txt';
-    }
-
-    /**
-     * @param string $email
+     * @param User $user
      * @return void
      */
-    public function writeLogLogin(string $email)
+    public function writeLogLogin(User $user): void
     {
-        $this->writeLog("LOGIN", [$email]);
+        $this->writeLog("LOGIN", [$user->getEmail()]);
     }
 
     /**
-     * @param string $email
+     * @param User $user
      * @return void
      */
-    public function writeLogLogout(string $email)
+    public function writeLogLogout(User $user): void
     {
-        $this->writeLog('LOGOUT', [$email]);
+        $this->writeLog('LOGOUT', [$user->getEmail()]);
     }
 
     /**
-     * @param string $email
+     * @param User $user
      * @return void
      */
-    public function writeLogRegistration(string $email)
+    public function writeLogRegistration(User $user): void
     {
-        $this->writeLog('REGISTRATION', [$email]);
+        $this->writeLog('REGISTRATION', [$user->getEmail()]);
     }
 
     /**
@@ -54,36 +46,38 @@ class Logger
      */
     private function writeLog(string $event, array $tags = [])
     {
-        $logsFilename = self::getLogFilename();
+        $connection = $this->databaseManager->createConnection();
 
-        $this->fileManager->createFileIfNotExists($logsFilename);
+        $sql = "INSERT INTO log (date, event, tags) VALUES (NOW(), :event, :tags)";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'event' => $event,
+            'tags' => implode(', ', $tags),
+        ]);
 
-        // costruisco il messaggio da scrivere
-        $row = $this->formatLogMessage($event, $tags);
-
-        // scrivo il messaggio di log
-        file_put_contents(
-            $this->fileManager->buildPathRelativeToProjectRoot($logsFilename),
-            $row,
-            FILE_APPEND | LOCK_EX
-        );
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
     }
 
     /**
-     * @param string $message
-     * @param array $tags array piano di stringhe usate come tag
-     * @return string
+     * Return the last inserted log, or null if there are no logs
+     *
+     * @return array|null
      */
-    private function formatLogMessage(string $message, array $tags = []): string
+    public function getLatestLogAsRow(): array | null
     {
-        $message = date('[Y-m-d H:i:s]') . ' ' . $message;
+        $connection = $this->databaseManager->createConnection();
 
-        if (count($tags) > 0) {
-            $message .= ' [';
-            $message  = $message . implode(', ', $tags);
-            $message .= ']';
+        $sql = "SELECT * FROM log ORDER BY date DESC, id DESC LIMIT 1";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute();
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
         }
+        $result = $queryStatement->fetch(PDO::FETCH_ASSOC);
 
-        return $message . PHP_EOL;
+        return $result;
     }
 }

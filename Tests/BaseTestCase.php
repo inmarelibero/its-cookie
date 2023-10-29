@@ -7,8 +7,7 @@ use PHPUnit\Framework\TestCase;
  */
 class BaseTestCase extends TestCase
 {
-    private $app;
-    private $fileManager;
+    private App $app;
 
     /**
      * @return void
@@ -19,16 +18,7 @@ class BaseTestCase extends TestCase
         session_destroy();
 
         $this->app = new App('test');
-        $this->fileManager = new FileManager($this->app);
 
-        $this->resetFixtures();
-    }
-
-    /**
-     * @return void
-     */
-    protected function tearDown(): void
-    {
         $this->resetFixtures();
     }
 
@@ -46,24 +36,49 @@ class BaseTestCase extends TestCase
     private function resetFixtures()
     {
         /**
-         * reset users.json
+         * reset database
          */
-        if (!(file_exists($this->fileManager->getProjectRoot()) && is_dir($this->fileManager->getProjectRoot()))) {
-            mkdir($this->fileManager->getProjectRoot());
-        }
-
-        file_put_contents($this->fileManager->buildPathRelativeToProjectRoot('users.json'), json_encode([
-            [
-                'email' => 'bar@example.com',
-                'password' => md5('bar'),
-            ]
-        ]));
+        $authenticationManager = new AuthenticationManager($this->app);
+        $databaseManager = new DatabaseManager($this->app);
+        $connection = $databaseManager->createConnection();
 
         /**
-         * reset logs.txt
+         * handle table "user"
          */
-        if (file_exists($this->fileManager->buildPathRelativeToProjectRoot(Logger::getLogFilename()))) {
-            unlink($this->fileManager->buildPathRelativeToProjectRoot(Logger::getLogFilename()));
-        }
+        $connection->exec(<<<EOF
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_unique` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+EOF
+);
+        $connection->exec(sprintf("TRUNCATE TABLE user"));
+
+        /**
+         * handle table "log"
+         */
+        $connection->exec(<<<EOF
+CREATE TABLE IF NOT EXISTS `log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `event` varchar(255) NOT NULL DEFAULT '',
+  `tags` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+EOF
+);
+        $connection->exec(sprintf("TRUNCATE TABLE log"));
+
+
+
+        /**
+         * add users
+         */
+        $authenticationManager->addUser(
+            User::buildWithPlainPassword('bar@example.com', 'bar')
+        );
     }
 }

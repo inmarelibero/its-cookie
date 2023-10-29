@@ -2,14 +2,14 @@
 
 class AuthenticationManager
 {
-    private $fileManager;
+    private DatabaseManager $databaseManager;
 
     /**
      *
      */
     public function __construct(App $app)
     {
-        $this->fileManager = new FileManager($app);
+        $this->databaseManager = new DatabaseManager($app);
     }
 
     /**
@@ -18,11 +18,21 @@ class AuthenticationManager
      */
     public function addUser(User $user): void
     {
-        $users = $this->getUsers();
+        $connection = $this->databaseManager->createConnection();
 
-        $users[] = $user;
+        $sql = "INSERT INTO user (email, password) VALUES (:email, :password)";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'email' => $user->getEmail(),
+            'password' => $user->getHashedPassword(),
+        ]);
 
-        $this->persistUsers($users);
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
+
+        $lastInsertId = $connection->lastInsertId();
+        $user->setId($lastInsertId);
     }
 
     /**
@@ -31,7 +41,11 @@ class AuthenticationManager
      */
     public function authenticateUser(User $user): void
     {
-        $_SESSION['email'] = $user->getEmail();
+        if ($user->getId() === null) {
+            $user = $this->findUserByEmail($user->getEmail());
+        }
+
+        $_SESSION['authenticated_user_id'] = $user->getId();
     }
 
     /**
@@ -43,7 +57,7 @@ class AuthenticationManager
         $users = $this->getUsers();
 
         foreach ($users as $currentUser) {
-            if ($user->getEmail() === $currentUser->getEmail() && $user->hasHashedPassword($currentUser->getHashedPassword())) {
+            if ($user->hasEmail($currentUser->getEmail()) && $user->hasHashedPassword($currentUser->getHashedPassword())) {
                 return true;
             }
         }
@@ -57,22 +71,75 @@ class AuthenticationManager
      */
     public function emailExists(string $email): bool
     {
-        foreach ($this->getUsers() as $user) {
-            if ($user->hasEmail($email)) {
-                return true;
-            }
-        }
+        $connection = $this->databaseManager->createConnection();
 
-        return false;
+        $sql = "SELECT COUNT(*) AS count FROM user WHERE email = :email";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'email' => $email,
+        ]);
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
+        $result = $queryStatement->fetch(PDO::FETCH_ASSOC);
+
+        return $result['count'] >= 1;
     }
 
     /**
-     * @return string|null
+     * @param int $id
+     * @return User|null
      */
-    public function getEmailOfAuthenticatedUser(): string | null
+    public function findUser(int $id): User | null
+    {
+        $connection = $this->databaseManager->createConnection();
+
+        $sql = "SELECT * FROM user WHERE id = :id LIMIT 1";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'id' => $id,
+        ]);
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
+
+        $result = $queryStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        return User::buildFromDatabaseRow($result[0]);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findUserByEmail(string $email): User | null
+    {
+        $connection = $this->databaseManager->createConnection();
+
+        $sql = "SELECT * FROM user WHERE email = :email LIMIT 1";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'email' => $email,
+        ]);
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
+
+        $result = $queryStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        return User::buildFromDatabaseRow($result[0]);
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getAuthenticatedUser(): User | null
     {
         if ($this->isUserAuthenticated()) {
-            return $_SESSION['email'];
+            return $this->findUser($_SESSION['authenticated_user_id']);
         }
 
         return null;
@@ -83,20 +150,20 @@ class AuthenticationManager
      */
     public function getUsers(): array
     {
-        $this->fileManager->createFileIfNotExists('users.json');
+        $connection = $this->databaseManager->createConnection();
 
-        $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
-        $content = file_get_contents($usersFilename);
+        $sql = "SELECT * FROM user";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute();
 
-        $usersData = json_decode($content, true);
-
-        if ($usersData === null) {
-            return [];
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
         }
+        $result = $queryStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $users = [];
-        foreach ($usersData as $user) {
-            $users[] = new User($user['email'], $user['password']);
+        foreach ($result as $row) {
+            $users[] = User::buildFromDatabaseRow($row);
         }
 
         return $users;
@@ -107,26 +174,6 @@ class AuthenticationManager
      */
     public function isUserAuthenticated(): bool
     {
-        return array_key_exists('email', $_SESSION);
-    }
-
-    /**
-     * @param User[] $users
-     * @return void
-     */
-    private function persistUsers(array $users): void
-    {
-        $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
-
-        $dataToWrite = [];
-
-        foreach ($users as $user) {
-            $dataToWrite[] = [
-                'email' => $user->getEmail(),
-                'password' => $user->getHashedPassword(),
-            ];
-        }
-
-        file_put_contents($usersFilename, json_encode($dataToWrite));
+        return array_key_exists('authenticated_user_id', $_SESSION);
     }
 }

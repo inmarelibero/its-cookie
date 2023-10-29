@@ -13,18 +13,15 @@ final class LoggerTest extends BaseTestCase
      */
     public function testWriteLogLogin(): void
     {
+        $authenticationManager = new AuthenticationManager($this->getApp());
         $logger = new Logger($this->getApp());
 
-        // assert file does not exist
-        $this->assertFalse(file_exists(__DIR__.'/cache/logs.txt'));
-
         // write log
-        $logger->writeLogLogin('bar@exmaple.com');
+        $logger->writeLogLogin($authenticationManager->findUserByEmail('bar@example.com'));
 
         // verify log
-        $this->assertStringContainsString('LOGIN', file_get_contents(__DIR__.'/cache/logs.txt'));
-
-        $this->assertFileExists(__DIR__.'/cache/logs.txt');
+        $latestLog = $logger->getLatestLogAsRow();
+        $this->assertEquals('LOGIN', $latestLog['event']);
     }
 
     /**
@@ -32,18 +29,15 @@ final class LoggerTest extends BaseTestCase
      */
     public function testWriteLogLogout(): void
     {
+        $authenticationManager = new AuthenticationManager($this->getApp());
         $logger = new Logger($this->getApp());
 
-        // assert file does not exist
-        $this->assertFalse(file_exists(__DIR__.'/cache/logs.txt'));
-
         // write log
-        $logger->writeLogLogout('bar@exmaple.com');
+        $logger->writeLogLogout($authenticationManager->findUserByEmail('bar@example.com'));
 
         // verify log
-        $this->assertStringContainsString('LOGOUT', file_get_contents(__DIR__.'/cache/logs.txt'));
-
-        $this->assertFileExists(__DIR__.'/cache/logs.txt');
+        $latestLog = $logger->getLatestLogAsRow();
+        $this->assertEquals('LOGOUT', $latestLog['event']);
     }
 
     /**
@@ -51,17 +45,14 @@ final class LoggerTest extends BaseTestCase
      */
     public function testWriteLogRegistration(): void
     {
+        $authenticationManager = new AuthenticationManager($this->getApp());
         $logger = new Logger($this->getApp());
 
-        // assert file does not exist
-        $this->assertFalse(file_exists(__DIR__.'/cache/logs.txt'));
-
         // write log
-        $logger->writeLogRegistration('bar@exmaple.com');
+        $logger->writeLogRegistration($authenticationManager->findUserByEmail('bar@example.com'));
 
         // verify log
-        $this->assertStringContainsString('REGISTRATION', file_get_contents(__DIR__.'/cache/logs.txt'));
-
-        $this->assertFileExists(__DIR__.'/cache/logs.txt');
+        $latestLog = $logger->getLatestLogAsRow();
+        $this->assertEquals('REGISTRATION', $latestLog['event']);
     }
 }

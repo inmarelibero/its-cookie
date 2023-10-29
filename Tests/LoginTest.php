@@ -16,9 +16,11 @@ final class LoginTest extends BaseTestCase
         $authenticationManager = new AuthenticationManager($this->getApp());
         $loginHandler = new LoginHandler($authenticationManager);
 
-        // do login
-        $this->assertTrue(
-            $loginHandler->handleLoginForm('bar@example.com', 'bar') instanceof User
-        );
+        $user = $loginHandler->handleLoginForm('bar@example.com', 'bar');
+
+        //
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals('bar@example.com', $user->getEmail());
+        $this->assertEquals(PasswordHasher::hashPassword('bar'), $user->getHashedPassword());
     }
 }

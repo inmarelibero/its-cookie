@@ -1,16 +1,27 @@
 <?php
 class User
 {
-    private string $email; 
+    private ?int $id = null;
+    private string $email;
     private string $hashedPassword;
 
     /**
      * @param string $email
      * @param string $hashedPassword
      */
-    function __construct(string $email, string $hashedPassword) {
+    private function __construct(string $email, string $hashedPassword) {
         $this->email = $email;
         $this->hashedPassword = $hashedPassword;
+    }
+
+    /**
+     * @param string $email
+     * @param string $hashedPassword
+     * @return User
+     */
+    static function buildWithHashedPassword(string $email, string $hashedPassword): User
+    {
+        return new User($email, $hashedPassword);
     }
 
     /**
@@ -20,7 +31,20 @@ class User
      */
     static function buildWithPlainPassword(string $email, string $plainPassword): User
     {
-        return new User($email, PasswordHasher::hashPassword($plainPassword));
+        return User::buildWithHashedPassword($email, PasswordHasher::hashPassword($plainPassword));
+    }
+
+    /**
+     * @param array $row
+     * @return User
+     */
+    static function buildFromDatabaseRow(array $row): User
+    {
+        $user = User::buildWithHashedPassword($row['email'], $row['password']);
+
+        $user->setId($row['id']);
+
+        return $user;
     }
 
     /**
@@ -64,5 +88,21 @@ class User
     public function hasHashedPassword(string $hashedPassword): bool
     {
         return $this->getHashedPassword() === $hashedPassword;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 }
