@@ -17,15 +17,16 @@
 
         CREATE TABLE `user` (
             `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `email` varchar(255) NOT NULL DEFAULT '',
+            `email` varchar(255) NOT NULL,
             `password` varchar(255) NOT NULL,
+            `enabled` tinyint(1) NOT NULL,
             PRIMARY KEY (`id`),
             UNIQUE KEY `email_unique` (`email`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 4. create table `log` with the following syntax:
 
-        CREATE TABLE IF NOT EXISTS `log` (
+        CREATE TABLE `log` (
             `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `date` datetime NOT NULL,
             `event` varchar(255) NOT NULL DEFAULT '',

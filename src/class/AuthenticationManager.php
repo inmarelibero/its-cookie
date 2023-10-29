@@ -20,7 +20,7 @@ class AuthenticationManager
     {
         $connection = $this->databaseManager->createConnection();
 
-        $sql = "INSERT INTO user (email, password) VALUES (:email, :password)";
+        $sql = "INSERT INTO user (email, password, enabled) VALUES (:email, :password, 1)";
         $queryStatement = $connection->prepare($sql);
         $result = $queryStatement->execute([
             'email' => $user->getEmail(),
@@ -50,19 +50,33 @@ class AuthenticationManager
 
     /**
      * @param User $user
+     * @param string $newPlainPassword
+     * @return void
+     * @throws Exception
+     */
+    public function changePassword(User $user, string $newPlainPassword): void
+    {
+        // @TODO: implement logic
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function deleteUser(User $user): void
+    {
+        // @TODO: implement logic
+    }
+
+    /**
+     * @param User $user
+     * @param string $email
+     * @param string $plainPassword
      * @return bool
      */
-    public function checkCredentials(User $user): bool
+    public function checkCredentials(User $user, string $email, string $plainPassword): bool
     {
-        $users = $this->getUsers();
-
-        foreach ($users as $currentUser) {
-            if ($user->hasEmail($currentUser->getEmail()) && $user->hasHashedPassword($currentUser->getHashedPassword())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $user->hasEmail($email) && $user->hasPlainPassword($plainPassword);
     }
 
     /**
@@ -105,9 +119,13 @@ class AuthenticationManager
             die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
         }
 
-        $result = $queryStatement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $queryStatement->fetch(PDO::FETCH_ASSOC);
 
-        return User::buildFromDatabaseRow($result[0]);
+        if (!$result) {
+            return null;
+        }
+
+        return User::buildFromDatabaseRow($result);
     }
 
     /**
@@ -128,9 +146,13 @@ class AuthenticationManager
             die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
         }
 
-        $result = $queryStatement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $queryStatement->fetch(PDO::FETCH_ASSOC);
 
-        return User::buildFromDatabaseRow($result[0]);
+        if (!$result) {
+            return null;
+        }
+
+        return User::buildFromDatabaseRow($result);
     }
 
     /**
@@ -138,7 +160,7 @@ class AuthenticationManager
      */
     public function getAuthenticatedUser(): User | null
     {
-        if ($this->isUserAuthenticated()) {
+        if (array_key_exists('authenticated_user_id', $_SESSION)) {
             return $this->findUser($_SESSION['authenticated_user_id']);
         }
 
@@ -174,6 +196,28 @@ class AuthenticationManager
      */
     public function isUserAuthenticated(): bool
     {
-        return array_key_exists('authenticated_user_id', $_SESSION);
+        return $this->getAuthenticatedUser() !== null;
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function persistUser(User $user): void
+    {
+        $connection = $this->databaseManager->createConnection();
+
+        $sql = "UPDATE user SET email = :email, password = :password, enabled = :enabled WHERE id = :id";
+        $queryStatement = $connection->prepare($sql);
+        $result = $queryStatement->execute([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'enabled' => $user->isEnabled() ? 1 : 0,
+            'password' => $user->getHashedPassword(),
+        ]);
+
+        if (!$result) {
+            die('Errore esecuzione query: ' . implode(',', $connection->errorInfo()));
+        }
     }
 }

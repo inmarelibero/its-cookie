@@ -48,8 +48,9 @@ class BaseTestCase extends TestCase
         $connection->exec(<<<EOF
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

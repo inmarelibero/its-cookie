@@ -4,6 +4,7 @@ class User
     private ?int $id = null;
     private string $email;
     private string $hashedPassword;
+    private bool $isEnabled = false;
 
     /**
      * @param string $email
@@ -43,6 +44,7 @@ class User
         $user = User::buildWithHashedPassword($row['email'], $row['password']);
 
         $user->setId($row['id']);
+        $user->setIsEnabled($row['enabled'] === 1 ? true : false);
 
         return $user;
     }
@@ -61,6 +63,15 @@ class User
     public function getHashedPassword(): string
     {
         return $this->hashedPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     * @return void
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->hashedPassword = PasswordHasher::hashPassword($plainPassword);
     }
 
     /**
@@ -104,5 +115,21 @@ class User
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->isEnabled === true;
+    }
+
+    /**
+     * @param bool $isEnabled
+     */
+    public function setIsEnabled(bool $isEnabled): void
+    {
+        $this->isEnabled = $isEnabled;
     }
 }

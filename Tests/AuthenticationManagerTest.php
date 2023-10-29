@@ -57,10 +57,26 @@ final class AuthenticationManagerTest extends BaseTestCase
         $authenticationManager = new AuthenticationManager($this->getApp());
 
         $user = User::buildWithPlainPassword('foo@example.com', 'foo');
-        $this->assertFalse($authenticationManager->checkCredentials($user));
+        $this->assertFalse($authenticationManager->checkCredentials($user, 'foo@example.com', 'bar'));
 
         $user = User::buildWithPlainPassword('bar@example.com', 'bar');
-        $this->assertTrue($authenticationManager->checkCredentials($user));
+        $this->assertTrue($authenticationManager->checkCredentials($user, 'bar@example.com', 'bar'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeleteUser(): void
+    {
+        $authenticationManager = new AuthenticationManager($this->getApp());
+
+        $user = $authenticationManager->findUserByEmail('bar@example.com');
+        $this->assertInstanceOf(User::class, $user);
+
+
+        $authenticationManager->deleteUser($user);
+        $user = $authenticationManager->findUserByEmail('bar@example.com');
+        $this->assertNull($user);
     }
 
     /**

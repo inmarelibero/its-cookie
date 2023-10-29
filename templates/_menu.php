@@ -18,6 +18,14 @@
                     </a>
                 </li>
 
+                <?php if ($authenticationManager->isUserAuthenticated()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin/users/index.php">
+                            UTENTI
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <li class="nav-item">
                     <?php if (!$authenticationManager->isUserAuthenticated()): ?>
                         <a class="nav-link active" aria-current="page" href="/login.php">
