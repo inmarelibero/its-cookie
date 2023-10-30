@@ -37,9 +37,6 @@ class RegistrationHandler
             throw new Exception('Le password non coincidono');
         }
 
-        // leggo gli utenti attuali
-        $users = $this->authenticationManager->getUsers();
-
         // se l'email esiste già: errore
         if ($this->authenticationManager->emailExists($email)) {
             throw new Exception('Email già esistente');
