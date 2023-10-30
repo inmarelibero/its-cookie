@@ -43,7 +43,6 @@ class RegistrationHandler
         }
 
         // inserisco un nuovo utente
-//        $user = new User($email, $password);
         $user = User::buildWithPlainPassword($email, $password);
 
         $this->authenticationManager->addUser($user);
