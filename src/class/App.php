@@ -70,7 +70,7 @@ class App
     /**
      * @return string
      */
-    public function getDatabasePassword(): string
+    public function getDatabasePassword(): ?string
     {
         return $this->readConfigValueForKey('APP_DATABASE_PWD');
     }
@@ -79,7 +79,7 @@ class App
      * @param string $configKey
      * @return string
      */
-    private function readConfigValueForKey(string $configKey): string
+    private function readConfigValueForKey(string $configKey): ?string
     {
         if ($this->isTest()) {
             require_once(__DIR__ . '/../../config.test.php');
