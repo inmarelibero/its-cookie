@@ -34,6 +34,10 @@ class LoginHandler
 
         $user = $this->authenticationManager->findUserByEmail($email);
 
+        if (!$user) {
+            throw new Exception('Utente non trovato');
+        }
+
         // @TODO: prevent login if user is not enabled
 
         if ($this->authenticationManager->checkCredentials($user, $email, $plainPassword)) {
