@@ -2,7 +2,6 @@
 
 $countries = [
     "Italy" => "Rome",
-    "Luxembourg" => "Luxembourg",
     "Belgium" => "Brussels",
     "Denmark" => "Copenhagen",
     "Finland" => "Helsinki",
@@ -37,3 +36,47 @@ $countries = [
  * 2) Stampare le stesse righe, ma ordinate (alfabeticamente) per capitale
  * 3) Stampare le stesse righe, ma ordinate (alfabeticamente) per nome del paese
  */
+
+function printCountries(array $input, $sortingType)
+{
+    /*
+     *
+     */
+    if ($sortingType === 'COUNTRY_ASC') {
+        ksort($input);
+    } elseif ($sortingType === 'COUNTRY_DESC') {
+        krsort($input);
+    } elseif ($sortingType === 'CAPITAL_ASC') {
+        asort($input);
+    } elseif ($sortingType === 'CAPITAL_DESC') {
+        arsort($input);
+    }
+
+    /*
+     *
+     */
+    $index = 0;
+
+    foreach ($input as $country => $capital) {
+        $index = $index + 1;
+        echo "The capital of $country is $capital";
+
+        if ($index >= count($input)) {
+            break;
+        }
+
+        echo '<br>';
+    }
+}
+
+//printCountries($countries, 'CAPITAL_ASC');
+//printCountries($countries, 'CAPITAL_DESC');
+//printCountries($countries, 'COUNTRY_ASC');
+printCountries($countries, 'COUNTRY_DESC');
+
+
+
+
+
+
+
