@@ -29,6 +29,49 @@ $cart = [
     ],
 ];
 
+function calculateTotal(array $input): float
+{
+    $total = 0;
+
+    foreach ($input as $item) {
+        $total  = $total + $item['price'];
+    }
+
+    return $total;
+}
+
+function findItemWithHighestPrice(array $input): array
+{
+    // trovo l'indice del prodotto con prezzo più alto
+    $indexOfItemWithHighestPrice = null;
+
+    foreach ($input as $index => $item) {
+        $price = $item['price'];
+
+        if () {
+            $indexOfItemWithHighestPrice = $index;
+        }
+    }
+
+    // restituisco $input[indice trovato]
+}
+function findItemWithLowestPrice(array $input): array
+{
+    //...
+}
+
+function getItemsSortedByPriceAsc(array $input): array
+{
+
+}
+
+function extractItemsWithMaxPrice(array $input, float $maxPrice): array
+{
+
+}
+
+
+
 /*
  * Calcolare e mostrare:
  *  - lista degli item in carrello e il prezzo totale
