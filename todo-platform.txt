@@ -1,0 +1,66 @@
+1) Creare un sito composto da:
+    - homepage.php
+    - contattaci.php
+    - chi-siamo.php
+
+2) Inserire un menu in alto che contenga i link ad ogni pagina, e che sia incluso in ogni file tramite require_once()
+
+3) Aggiungere la pagina login.php:
+    - aggiungere il link nel menu
+    - la pagina mostra un form per effettuare il login
+    - le credenziali degli utenti sono contenute in users.csv (1° colonna = email, 2° colonna = password)
+    - se l'utente effettua correttamente il login, salvare l'email nella sessione
+    - se l'utente è loggato, mostrare nel menu la stringa "Loggato come (mostrare l'email)"
+    - se l'utente è loggato, mostrare nel menu il link "logout.php" che effettua il logout
+      (elimina la sessione) e redireziona l'utente a homepage.php
+    - mostrare il link a "login.php" solo se l'utente non è loggato, altrimenti mostrare il link a "logout.php"
+
+4) esporre pubblicamente solo i file che vogliamo siano raggiungibili via browser (es. "nascondere" users.csv)
+
+5) rendere accessibile la pagina "contattaci.php" solo agli utenti autenticati; eseguire un redirect alla pagina
+   di login per gli utenti anonimi
+
+6) Scrivere un log ogni volta che un utente effettua login e logout nel file "logs.txt"
+   (che all'inizio potrebbe anche non esistere)
+
+7) Perfezionare il form di login:
+    - mostrare degli errori: se l'utente inserisce un'email non trovata, se la password è sbagliata, etc...
+
+8) Implementare la registrazione di utenti:
+    - usare json al posto di csv per memorizzare le credenziali degli utenti
+    - creare register.php
+    - aggiungere la voce nel menu (solo se l'utente non è loggato)
+    - mostrare un errore se l'email esiste già, se la password è più corta di 5 caratteri, etc..
+
+9) Implementare il cambio password
+    -  Critpare le password con md5()
+
+10) Scrivere un log per tenere traccia delle pagine visitate
+
+11) Scrivere un log del tipo "Utente xxx ha effettuato il login" ogni volta che un utente effettua
+    ogin nel file "logs.txt" (che all'inizio potrebbe anche non esistere)
+    Scrivere un log anche al logout
+
+12) Perfezionare il form di login:
+    - mostrare degli errori: se l'utente inserisce un username non trovato, se la password è sbagliata, etc...
+
+13) Implementare la registrazione di utenti:
+    - usare json al posto di csv per memorizzare le credenziali degli utenti
+    - creare register.php
+    - aggiungere la voce nel menu (solo se l'utente non è loggato)
+    - mostrare un errore se l'username esiste già, se la password è più corta di 5 caratteri, etc..
+
+14) Implementare il cambio password
+    Crittare le password con md5()
+
+15) Scrivere un log per tenere traccia delle pagine visitate
+
+16) utilizzare gli oggetti: introdurre AuthenticationProvider, con le eccezioni
+
+17) implementare la classe User e usare quella per modellare gli utenti della piattaforma
+
+18) Implementare un'area di amministrazione che elenca tutti gli utenti della piattaforma, con la possibilità di:
+    - memorizzare i dati in database
+    - eliminare un utente
+    - disabilitare un utente
+    - cambiare la password di un utente
