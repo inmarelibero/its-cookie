@@ -4,7 +4,7 @@
  * Return true if the user with email = $email was authenticated
  *
  * @param string $email
- * @return bool
+ * @return bo
  */
 function isUserWithEmailAuthenticated(string $email): bool
 {
@@ -26,4 +26,11 @@ function isUserAuthenticated(): bool {
     }
 
     return true;
+}
+
+function getEmailOfAuthenticatedUser(): ?string{
+    if (isUserAuthenticated()){
+        return $_SESSION['email'];
+    }
+    return null;
 }

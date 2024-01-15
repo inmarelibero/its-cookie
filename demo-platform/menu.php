@@ -14,4 +14,10 @@
             CONTATTACI
         </a>
     </li>
-</ul>
+    
+    <?php if(isUserAuthenticated()): ?>
+        <li>
+            Sei loggato come <?php echo getEmailOfAuthenticatedUser(); ?>
+        </li>
+    <?php endif; ?>
+</ul>   
