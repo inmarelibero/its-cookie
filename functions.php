@@ -10,8 +10,15 @@ function isUserWithEmailAuthenticated(string $email): bool
 {
     if (empty($_SESSION['email'])) {
         return false;
-
     }
 
     return strtolower($_SESSION['email']) === strtolower($email);
+}
+
+function isUserAuthenticated(): bool {
+    if (empty($_SESSION['email'])) {
+        return false;
+    }
+
+    return true;
 }
