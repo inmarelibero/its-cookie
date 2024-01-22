@@ -1,9 +1,8 @@
-Live-share url:
+===== Live-share
 
-https://prod.liveshare.vsengsaas.visualstudio.com/join?3F08CED9AADE5D9EC822232ECA0CA940771D
+url:https://prod.liveshare.vsengsaas.visualstudio.com/join?3F08CED9AADE5D9EC822232ECA0CA940771D
 
 
-
-Localtunnel:
-url: https://all-tools-dress.loca.lt/
-password: 62.18.174.41
+===== Localtunnel:
+url: https://sad-dogs-add.loca.lt
+password: 158.148.227.215
