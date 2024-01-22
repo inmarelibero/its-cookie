@@ -15,9 +15,20 @@
         </a>
     </li>
     
-    <?php if(isUserAuthenticated()): ?>
+    <?php if (isUserAuthenticated()): ?>
         <li>
             Sei loggato come <?php echo getEmailOfAuthenticatedUser(); ?>
+        </li>
+        <li>
+            <a href="logout.php">
+                LOGOUT
+            </a>
+        </li>
+    <?php else: ?>
+        <li>
+            <a href="login.php">
+                LOGIN
+            </a>
         </li>
     <?php endif; ?>
 </ul>   

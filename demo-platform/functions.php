@@ -116,3 +116,17 @@ function findUser(?string $email, ?string $password): bool
 
     throw new Exception("Email non trovata");
 }
+
+/**
+ * 
+ */
+function redirectTo($path = 'homepage.php')
+{
+    header("Location: ".$path);
+    exit();
+}
+
+function redirectToHome()
+{
+    redirectTo();
+}

@@ -15,8 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
 
     // effettua il redirect se il login è andato a buon fine
     if ($loginResult == true){
-        header("Location: homepage.php");
-        exit();
+        redirectToHome();
     }
 }
 
