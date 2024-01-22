@@ -27,8 +27,8 @@
     - mostrare degli errori: se l'utente inserisce un'email non trovata, se la password è sbagliata, etc...
 
 8) Implementare la registrazione di utenti:
-    - usare json al posto di csv per memorizzare le credenziali degli utenti
-    - creare register.php
+    - creare register.php e implementare la registrazione delgi utenti usando users.csv
+    - usare users.json al posto di users.csv per memorizzare le credenziali degli utenti
     - aggiungere la voce nel menu (solo se l'utente non è loggato)
     - mostrare un errore se l'email esiste già, se la password è più corta di 5 caratteri, etc..
 

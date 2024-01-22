@@ -105,7 +105,7 @@ function findUser(?string $email, ?string $password): bool
         $credentialEmail = $credentials[0];
         $credentialPassword = $credentials[1];
         
-        if ($emailFormatted === $credentialEmail){
+        if ($email === $credentialEmail){
             if ($password === $credentialPassword){
                 return true;
             }
