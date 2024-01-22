@@ -1,3 +1,5 @@
+<?php require_once('init.php'); ?>
+
 <html>
     <head>
         <?php require_once('head.php'); ?>
