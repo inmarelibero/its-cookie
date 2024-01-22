@@ -1,25 +1,18 @@
 <?php 
 require_once('init.php');
 
-if ($_SERVER['REQUEST_METHOD'] ==='POST') {
-    // leggo i valori inviati dal form
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // itero sugli utenti
-    $csvFile = file('users.csv');
-    $data = [];
-    foreach ($csvFile as $line) {
-        $data[] = str_getcsv($line);
+if ($_SERVER['REQUEST_METHOD'] ==='POST') {   // per controllare se la richiesta è stata inviata in post
+    $loginResult = null;
+    
+    try{
+        $loginResult = tryLogin($_POST['email'], $_POST['password']);
+    } catch(Exception $exception){
+        $error = $exception->getMessage();
     }
-    foreach($data as $credentials){
-        $credentialEmail = $credentials[0];
-        $credentialPassword = $credentials[1];
-        if ($email === $credentialEmail && $password === $credentialPassword){
-            $_SESSION['email'] = $email;//utente autenticato
-            header("Location: homepage.php");
-            exit();
-        }
+
+    if($loginResult == true){
+        header("Location: homepage.php");
+        exit();
     }
 }
 
@@ -37,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
 
         <form action="login.php" method="post">
             <h1>LOGIN</h1>
+            <?php if(isset($error)): ?>
+                <p style="color:red">
+                    <?php echo $error ?>
+                </p>
+            <?php endif ?>
             
             <p>
                 <label>email</label>
