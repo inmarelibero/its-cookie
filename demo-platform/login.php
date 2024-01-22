@@ -1,16 +1,20 @@
 <?php 
 require_once('init.php');
 
-if ($_SERVER['REQUEST_METHOD'] ==='POST') {   // per controllare se la richiesta è stata inviata in post
+// gestisce il form se la richiesta è in POST
+if ($_SERVER['REQUEST_METHOD'] ==='POST') {
     $loginResult = null;
     
+    // prova ad effettuare il login
     try{
         $loginResult = tryLogin($_POST['email'], $_POST['password']);
     } catch(Exception $exception){
+        // inizializza la variabile $error contenente l'errore impostato sull'eccezione
         $error = $exception->getMessage();
     }
 
-    if($loginResult == true){
+    // effettua il redirect se il login è andato a buon fine
+    if ($loginResult == true){
         header("Location: homepage.php");
         exit();
     }

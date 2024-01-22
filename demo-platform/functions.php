@@ -29,6 +29,9 @@ function isUserAuthenticated(): bool
     return true;
 }
 
+/**
+ * 
+ */
 function getEmailOfAuthenticatedUser(): ?string
 {
     if (isUserAuthenticated()){
@@ -37,6 +40,9 @@ function getEmailOfAuthenticatedUser(): ?string
     return null;
 }
 
+/**
+ * 
+ */
 function tryLogin(?string $email, ?string $password): bool
 {
     if (empty($email)){
@@ -46,7 +52,8 @@ function tryLogin(?string $email, ?string $password): bool
     $emailFormatted = getTrimAndLowerCase($email);
 
     if (findUser($emailFormatted, $password) === true) {
-        $_SESSION['email'] = $emailFormatted;//utente autenticato
+        // autentica l'utente usando la sessione
+        $_SESSION['email'] = $emailFormatted;
 
         return true;
     }
@@ -54,6 +61,9 @@ function tryLogin(?string $email, ?string $password): bool
     return false;
 }
 
+/**
+ * 
+ */
 function getTrimAndLowerCase(string $input): string {
     $output = strtolower ($input);
     $output = trim ($output);
@@ -62,20 +72,25 @@ function getTrimAndLowerCase(string $input): string {
 }
 
 /**
- * ogni elemento dell'array ha il formato: 
- * [
- *  0 => email,
- *  1 => password
- * ]
+ * Restituisce un array di credenziali utente in cui gni elementoha il formato: 
+ *  [
+ *      [
+ *          0 => email,
+ *          1 => password
+ *      ],
+ *      ...
+ *  ]
  * 
  */
 function readCredentials() :array{
     
     $csvFile = file(__DIR__.'/users.csv');
     $data = [];
+
     foreach ($csvFile as $line) {
         $data[] = str_getcsv($line);
     }
+
     return $data;
 }
 
@@ -91,7 +106,7 @@ function findUser(?string $email, ?string $password): bool
         $credentialPassword = $credentials[1];
         
         if ($emailFormatted === $credentialEmail){
-            if($password === $credentialPassword){
+            if ($password === $credentialPassword){
                 return true;
             }
 
