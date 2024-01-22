@@ -136,7 +136,7 @@ function redirectToHome()
  */
 function redirectIfNotAuthenticated()
 {
-    if (!isUserAuthenticated) {
+    if (!isUserAuthenticated()) {
         redirectTo('login.php');
     }
 }
