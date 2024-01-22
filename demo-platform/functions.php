@@ -130,3 +130,13 @@ function redirectToHome()
 {
     redirectTo();
 }
+
+/**
+ * 
+ */
+function redirectIfNotAuthenticated()
+{
+    if (!isUserAuthenticated) {
+        redirectTo('login.php');
+    }
+}

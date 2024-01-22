@@ -1,5 +1,9 @@
 <?php require_once('init.php'); ?>
 
+<?php
+    redirectIfNotAuthenticated();
+?>
+
 <html>
     <head>
         <?php require_once('head.php'); ?>
