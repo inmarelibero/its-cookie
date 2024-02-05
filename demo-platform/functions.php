@@ -72,7 +72,7 @@ function getTrimAndLowerCase(string $input): string {
 }
 
 /**
- * Restituisce un array di credenziali utente in cui gni elementoha il formato: 
+ * Restituisce un array di credenziali utente in cui ogni elemento ha il formato: 
  *  [
  *      [
  *          0 => email,
@@ -96,17 +96,18 @@ function readCredentials() :array{
 
 /**
  * $email dev'essere già lowercase e senza spazi
+ * $password è la password in chiaro passata dal form di login
  */
-function findUser(?string $email, ?string $password): bool
+function findUser(?string $email, ?string $plainPassword): bool
 {
     $data = readCredentials();
     
     foreach($data as $credentials){
         $credentialEmail = $credentials[0];
-        $credentialPassword = $credentials[1];
+        $encryptedCredentialPassword = $credentials[1];
         
         if ($email === $credentialEmail){
-            if ($password === $credentialPassword){
+            if (md5($plainPassword) === $encryptedCredentialPassword){
                 return true;
             }
 
