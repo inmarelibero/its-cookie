@@ -26,38 +26,38 @@
 7) Perfezionare il form di login:
     - mostrare degli errori: se l'utente inserisce un'email non trovata, se la password è sbagliata, etc...
 
-8) Implementare la registrazione di utenti:
+8) Implementare il cambio password
+    -  Critpare le password con md5()
+
+9) implementare la classe User.php e usare quella per modellare gli utenti della piattaforma
+
+10) Implementare la registrazione di utenti:
     - creare register.php e implementare la registrazione delgi utenti usando users.csv
     - usare users.json al posto di users.csv per memorizzare le credenziali degli utenti
     - aggiungere la voce nel menu (solo se l'utente non è loggato)
     - mostrare un errore se l'email esiste già, se la password è più corta di 5 caratteri, etc..
 
-9) Implementare il cambio password
-    -  Critpare le password con md5()
+11) Scrivere un log per tenere traccia delle pagine visitate
 
-10) Scrivere un log per tenere traccia delle pagine visitate
-
-11) Scrivere un log del tipo "Utente xxx ha effettuato il login" ogni volta che un utente effettua
+12) Scrivere un log del tipo "Utente xxx ha effettuato il login" ogni volta che un utente effettua
     ogin nel file "logs.txt" (che all'inizio potrebbe anche non esistere)
     Scrivere un log anche al logout
 
-12) Perfezionare il form di login:
+13) Perfezionare il form di login:
     - mostrare degli errori: se l'utente inserisce un username non trovato, se la password è sbagliata, etc...
 
-13) Implementare la registrazione di utenti:
+14) Implementare la registrazione di utenti:
     - usare json al posto di csv per memorizzare le credenziali degli utenti
     - creare register.php
     - aggiungere la voce nel menu (solo se l'utente non è loggato)
     - mostrare un errore se l'username esiste già, se la password è più corta di 5 caratteri, etc..
 
-14) Implementare il cambio password
+15) Implementare il cambio password
     Crittare le password con md5()
 
-15) Scrivere un log per tenere traccia delle pagine visitate
+16) Scrivere un log per tenere traccia delle pagine visitate
 
-16) utilizzare gli oggetti: introdurre AuthenticationProvider, con le eccezioni
-
-17) implementare la classe User e usare quella per modellare gli utenti della piattaforma
+17) utilizzare gli oggetti: introdurre AuthenticationProvider, con le eccezioni
 
 18) Implementare un'area di amministrazione che elenca tutti gli utenti della piattaforma, con la possibilità di:
     - memorizzare i dati in database

@@ -4,7 +4,7 @@
  * Return true if the user with email = $email was authenticated
  *
  * @param string $email
- * @return bo
+ * @return bool
  */
 function isUserWithEmailAuthenticated(string $email): bool
 {
