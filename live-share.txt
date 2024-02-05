@@ -1,6 +1,6 @@
 ===== Live-share
 
-url:https://prod.liveshare.vsengsaas.visualstudio.com/join?3F08CED9AADE5D9EC822232ECA0CA940771D
+url: https://prod.liveshare.vsengsaas.visualstudio.com/join?03FED82546E2DD30D0FD1D1234C7811720A5
 
 
 ===== Localtunnel:
