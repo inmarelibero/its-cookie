@@ -1,4 +1,3 @@
 .phpunit.result.cache
 logs.txt
-users.csv
 users.json
