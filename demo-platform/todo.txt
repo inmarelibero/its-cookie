@@ -27,7 +27,8 @@
     - mostrare degli errori: se l'utente inserisce un'email non trovata, se la password è sbagliata, etc...
 
 8) Implementare il cambio password
-    -  Critpare le password con md5()
+    - Critpare le password con md5()
+    - creare la pagina change-password.php
 
 9) implementare la classe User.php e usare quella per modellare gli utenti della piattaforma
 
