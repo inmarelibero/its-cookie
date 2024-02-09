@@ -39,10 +39,12 @@
     - mostrare un errore se l'email esiste già, se la password è più corta di 5 caratteri, etc..
 
 11) Scrivere un log per tenere traccia delle pagine visitate
+    - formato "[2024-02-10 11:05:00] visitata pagina /homepage.php"
 
 12) Scrivere un log del tipo "Utente xxx ha effettuato il login" ogni volta che un utente effettua
     ogin nel file "logs.txt" (che all'inizio potrebbe anche non esistere)
     Scrivere un log anche al logout
+    - formato "[2024-02-10 11:05:00] Utente xxx ha effettuato il login"
 
 13) Perfezionare il form di login:
     - mostrare degli errori: se l'utente inserisce un username non trovato, se la password è sbagliata, etc...
