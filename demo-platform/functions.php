@@ -61,6 +61,51 @@ function tryLogin(?string $email, ?string $password): bool
     return false;
 }
 
+function tryChangePassword(string $email, ?string $plainPassword) {
+    if(!isUserExisting($email)){
+        throw new Exception ("l'email non esiste");
+    }
+
+    //ERRORE PASSWORD TROPPO CORTA
+    if($plainPassword === null || strlen($plainPassword) < 3){
+        throw new Exception ("Password troppo corta");
+    }
+
+    $data = readCredentials();
+
+    // PRENDERE L'UTENTE A CUI VOGLIO AGGIORNARE LA PASSWORD
+    foreach ($data as $index => $credentials){
+        $emailCredentials = $credentials[0];
+        if ($emailCredentials === $email) {
+            // AGGIORNO LA PASSWORD DI QUELL'UTENTE
+            $data[$index][1] = md5($plainPassword);
+        }
+    }
+
+    // MEMORIZZO I CAMBIAMENTI DEL FILE USER.CSV
+    persistUsers($data);   
+}
+
+function tryRegisterUser(?string $email, ?string $plainPassword){
+    $data = readCredentials();
+    $data[] = [$email, $plainPassword];
+    persistUsers($data);
+}
+
+/**
+ * 
+ */
+function persistUsers(array $users){
+    // var_dump($users);die;
+    $fp = fopen('users.csv', 'w');
+    
+    foreach($users as $user){
+        fputcsv($fp, $user);
+    }
+
+    fclose($fp);
+}
+
 /**
  * 
  */
@@ -118,6 +163,20 @@ function findUser(?string $email, ?string $plainPassword): bool
     throw new Exception("Email non trovata");
 }
 
+function isUserExisting (string $email): bool
+{
+    $data = readCredentials();
+    
+    foreach($data as $credentials){
+        $credentialEmail = $credentials[0];
+        if ($email === $credentialEmail){
+                return true;
+        }
+    }
+
+    return false; 
+}
+
 /**
  * 
  */
@@ -141,3 +200,5 @@ function redirectIfNotAuthenticated()
         redirectTo('login.php');
     }
 }
+
+?>

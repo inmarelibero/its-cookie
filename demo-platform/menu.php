@@ -24,6 +24,11 @@
                 LOGOUT
             </a>
         </li>
+        <li>
+            <a href="change-password.php">
+                CAMBIA PASSWORD
+            </a>
+        </li>
     <?php else: ?>
         <li>
             <a href="login.php">

@@ -1,28 +1,15 @@
 <?php 
 require_once('init.php');
 
+redirectIfNotAuthenticated();
+
 // gestisce il form se la richiesta è in POST
 if ($_SERVER['REQUEST_METHOD'] ==='POST') {
-    // LEGGERE GLI UTENTI 
-    $data = readCredentials();
-
-    // PRENDERE L'UTENTE A CUI VOGLIO AGGIORNARE LA PASSWORD
-    foreach ($data as $index => $credentials){
-        $emailCredentials = $credentials[0];
-        if ($emailCredentials === getEmailOfAuthenticatedUser()){
-            // AGGIORNO LA PASSWORD DI QUELL'UTENTE
-            $data[$index][1] = md5($_POST['password']);
-        }
+    try {
+        tryChangePassword(getEmailOfAuthenticatedUser(), $_POST['password']);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
     }
-
-    // MEMORIZZO I CAMBIAMENTI DEL FILE USER.CSV
-    $fp = fopen('users.csv', 'w');
-    
-    foreach($data as $line){
-        fputcsv($fp, $line);
-    }
-
-    fclose($fp);
 }
 
 ?>
