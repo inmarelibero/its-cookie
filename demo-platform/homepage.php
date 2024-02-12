@@ -1,8 +1,7 @@
 <?php
 require_once('init.php');
 
-
-writeLogVisitedPage();
+$logger->writeLogVisitedPage();
 
 ?>
 
