@@ -5,13 +5,19 @@ $logger->writeLogVisitedPage();
 
 ?>
 
-<html>
-    <head>
-        <?php require_once('head.php'); ?>
-    </head>
+<!doctype html>
+<html lang="en">
+    <?php require_once('head.php'); ?>
+
     <body>
         <?php require_once('menu.php'); ?>
 
-        home
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    Home
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -1,56 +1,60 @@
 <?php 
 require_once('init.php');
 
+redirectIfAuthenticated();
+
 // gestisce il form se la richiesta è in POST
 if ($_SERVER['REQUEST_METHOD'] ==='POST') {
     $loginResult = null;
     
     // prova ad effettuare il login
-    try{
-        // $loginResult = tryLogin($_POST['email'], $_POST['password']);
-        $user = tryLogin($_POST['email'], $_POST['password']);
+    try {
+        $loginResult = tryLogin($_POST['email'], $_POST['password']);
     } catch(Exception $exception) {
         // inizializza la variabile $error contenente l'errore impostato sull'eccezione
         $error = $exception->getMessage();
     }
 
     // effettua il redirect se il login è andato a buon fine
-    // if ($loginResult == true) {
-    if ($loginResult instanceof User) {
+    if ($loginResult === true) {
         redirectToHome();
     }
 }
 
 ?>
 
-<html>
-    <head>
-        <?php require_once('head.php'); ?>
-    </head>
+<!doctype html>
+<html lang="en">
+    <?php require_once('head.php'); ?>
+
     <body>
         <?php require_once('menu.php'); ?>
 
-        <form action="login.php" method="post">
-            <h1>LOGIN</h1>
-            <?php if(isset($error)): ?>
-                <p style="color:red">
-                    <?php echo $error ?>
-                </p>
-            <?php endif ?>
-            
-            <p>
-                <label>email</label>
-                <input type="text" name="email">
-            </p>
-            
-            <p>
-                <label>password</label>
-                <input type="password" name="password">
-            </p>
+        <div class="container">
+            <div class="row">
+                <div class="col">
 
-            <p>
-                <button type="submit">INVIA</button>
-            </p>
-        </form>
+                    <h1>LOGIN</h1>
+
+                    <?php if (isset($error)): ?>
+                        <p style="color:red">
+                            <?php echo $error ?>
+                        </p>
+                    <?php endif ?>
+
+                    <form action="login.php" method="post" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" name="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="text" class="form-control" name="password" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">INVIA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

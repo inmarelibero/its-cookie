@@ -1,20 +1,23 @@
 <?php
 require_once('init.php');
 
-writeLogVisitedPage();
+$logger->writeLogVisitedPage();
+
 ?>
 
-<?php
-    redirectIfNotAuthenticated();
-?>
+<!doctype html>
+<html lang="en">
+    <?php require_once('head.php'); ?>
 
-<html>
-    <head>
-        <?php require_once('head.php'); ?>
-    </head>
     <body>
         <?php require_once('menu.php'); ?>
 
-        contattaci
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    Contattaci
+                </div>
+            </div>
+        </div>
     </body>
 </html>

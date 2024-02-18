@@ -1,21 +1,6 @@
 <?php
 
 /**
- * Return true if the user with email = $email was authenticated
- *
- * @param string $email
- * @return bool
- */
-function isUserWithEmailAuthenticated(string $email): bool
-{
-    if (empty($_SESSION['email'])) {
-        return false;
-    }
-
-    return strtolower($_SESSION['email']) === strtolower($email);
-}
-
-/**
  * Return true if user is authenticated
  *
  * @return bool
@@ -34,9 +19,10 @@ function isUserAuthenticated(): bool
  */
 function getEmailOfAuthenticatedUser(): ?string
 {
-    if (isUserAuthenticated()){
+    if (isUserAuthenticated()) {
         return $_SESSION['email'];
     }
+
     return null;
 }
 
@@ -45,8 +31,8 @@ function getEmailOfAuthenticatedUser(): ?string
  */
 function tryLogin(?string $email, ?string $password): bool
 {
-    if (empty($email)){
-        return false;
+    if (empty($email)) {
+        throw new Exception("Email vuota");
     }
 
     $emailFormatted = getTrimAndLowerCase($email);
@@ -57,24 +43,30 @@ function tryLogin(?string $email, ?string $password): bool
 
         return true;
     }
-    
-    return false;
+
+    throw new Exception("Utente non trovato");
 }
 
+/**
+ * @param string $email
+ * @param string|null $plainPassword
+ * @return void
+ * @throws Exception
+ */
 function tryChangePassword(string $email, ?string $plainPassword) {
-    if(!isUserExisting($email)){
+    if (!isUserExisting($email)) {
         throw new Exception ("l'email non esiste");
     }
 
     //ERRORE PASSWORD TROPPO CORTA
-    if($plainPassword === null || strlen($plainPassword) < 3){
+    if ($plainPassword === null || strlen($plainPassword) < 3) {
         throw new Exception ("Password troppo corta");
     }
 
     $data = readCredentials();
 
     // PRENDERE L'UTENTE A CUI VOGLIO AGGIORNARE LA PASSWORD
-    foreach ($data as $index => $credentials){
+    foreach ($data as $index => $credentials) {
         $emailCredentials = $credentials[0];
         if ($emailCredentials === $email) {
             // AGGIORNO LA PASSWORD DI QUELL'UTENTE
@@ -86,20 +78,41 @@ function tryChangePassword(string $email, ?string $plainPassword) {
     persistUsers($data);   
 }
 
-function tryRegisterUser(?string $email, ?string $plainPassword){
+/**
+ * @param string|null $email
+ * @param string|null $plainPassword
+ * @return bool
+ * @throws Exception
+ */
+function tryRegisterUser(?string $email, ?string $plainPassword): bool
+{
+    //ERRORE PASSWORD TROPPO CORTA
+    if ($plainPassword === null || strlen($plainPassword) < 3) {
+        throw new Exception ("Password troppo corta");
+    }
+
+    if (isUserExisting($email)) {
+        throw new Exception ("Esiste già un utente con questa email");
+    }
+
     $data = readCredentials();
-    $data[] = [$email, $plainPassword];
+
+    // AGGIUNGO L'UTENTE
+    $data[] = [$email, md5($plainPassword)];
+
+    // MEMORIZZO I CAMBIAMENTI DEL FILE USER.CSV
     persistUsers($data);
+
+    return true;
 }
 
 /**
  * 
  */
-function persistUsers(array $users){
-    // var_dump($users);die;
+function persistUsers(array $users) {
     $fp = fopen('users.csv', 'w');
     
-    foreach($users as $user){
+    foreach($users as $user) {
         fputcsv($fp, $user);
     }
 
@@ -147,12 +160,12 @@ function findUser(?string $email, ?string $plainPassword): bool
 {
     $data = readCredentials();
     
-    foreach($data as $credentials){
+    foreach($data as $credentials) {
         $credentialEmail = $credentials[0];
         $encryptedCredentialPassword = $credentials[1];
         
-        if ($email === $credentialEmail){
-            if (md5($plainPassword) === $encryptedCredentialPassword){
+        if ($email === $credentialEmail) {
+            if (md5($plainPassword) === $encryptedCredentialPassword) {
                 return true;
             }
 
@@ -163,13 +176,17 @@ function findUser(?string $email, ?string $plainPassword): bool
     throw new Exception("Email non trovata");
 }
 
+/**
+ * @param string $email
+ * @return bool
+ */
 function isUserExisting (string $email): bool
 {
     $data = readCredentials();
     
-    foreach($data as $credentials){
+    foreach($data as $credentials) {
         $credentialEmail = $credentials[0];
-        if ($email === $credentialEmail){
+        if ($email === $credentialEmail) {
                 return true;
         }
     }
@@ -186,6 +203,9 @@ function redirectTo($path = 'homepage.php')
     exit();
 }
 
+/**
+ * @return void
+ */
 function redirectToHome()
 {
     redirectTo();
@@ -198,5 +218,15 @@ function redirectIfNotAuthenticated()
 {
     if (!isUserAuthenticated()) {
         redirectTo('login.php');
+    }
+}
+
+/**
+ *
+ */
+function redirectIfAuthenticated($path = '/homepage.php')
+{
+    if (isUserAuthenticated()) {
+        redirectTo($path);
     }
 }

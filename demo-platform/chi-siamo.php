@@ -1,12 +1,23 @@
-<?php require_once('init.php'); ?>
+<?php
+require_once('init.php');
 
-<html>
-    <head>
-        <?php require_once('head.php'); ?>
-    </head>
+$logger->writeLogVisitedPage();
+
+?>
+
+<!doctype html>
+<html lang="en">
+    <?php require_once('head.php'); ?>
+
     <body>
         <?php require_once('menu.php'); ?>
 
-        chi siamo
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    Chi siamo
+                </div>
+            </div>
+        </div>
     </body>
 </html>
