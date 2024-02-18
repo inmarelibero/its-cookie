@@ -27,9 +27,9 @@ function getEmailOfAuthenticatedUser(): ?string
 }
 
 /**
- * 
+ * @todo return User
  */
-function tryLogin(?string $email, ?string $password): bool
+function tryLogin(?string $email, ?string $password): User
 {
     if (empty($email)) {
         throw new Exception("Email vuota");
@@ -40,6 +40,9 @@ function tryLogin(?string $email, ?string $password): bool
     if (findUser($emailFormatted, $password) === true) {
         // autentica l'utente usando la sessione
         $_SESSION['email'] = $emailFormatted;
+
+        $logger = new Logger();
+        $logger->writeLogUserLogin($emailFormatted);
 
         return true;
     }
@@ -53,7 +56,8 @@ function tryLogin(?string $email, ?string $password): bool
  * @return void
  * @throws Exception
  */
-function tryChangePassword(string $email, ?string $plainPassword) {
+function tryChangePassword(string $email, ?string $plainPassword)
+{
     if (!isUserExisting($email)) {
         throw new Exception ("l'email non esiste");
     }
@@ -79,12 +83,14 @@ function tryChangePassword(string $email, ?string $plainPassword) {
 }
 
 /**
+ *
+ * @todo return User
  * @param string|null $email
  * @param string|null $plainPassword
  * @return bool
  * @throws Exception
  */
-function tryRegisterUser(?string $email, ?string $plainPassword): bool
+function tryRegisterUser(?string $email, ?string $plainPassword): User
 {
     //ERRORE PASSWORD TROPPO CORTA
     if ($plainPassword === null || strlen($plainPassword) < 3) {
@@ -107,9 +113,10 @@ function tryRegisterUser(?string $email, ?string $plainPassword): bool
 }
 
 /**
- * 
+ * @todo $users must be an array of User instances
  */
-function persistUsers(array $users) {
+function persistUsers(array $users)
+    {
     $fp = fopen('users.csv', 'w');
     
     foreach($users as $user) {
@@ -122,7 +129,8 @@ function persistUsers(array $users) {
 /**
  * 
  */
-function getTrimAndLowerCase(string $input): string {
+function getTrimAndLowerCase(string $input): string
+{
     $output = strtolower ($input);
     $output = trim ($output);
 
@@ -139,8 +147,10 @@ function getTrimAndLowerCase(string $input): string {
  *      ...
  *  ]
  * 
+ * @todo return array of User instances
  */
-function readCredentials() :array{
+function readCredentials(): array
+{
     
     $csvFile = file(__DIR__.'/users.csv');
     $data = [];
@@ -155,8 +165,10 @@ function readCredentials() :array{
 /**
  * $email dev'essere già lowercase e senza spazi
  * $password è la password in chiaro passata dal form di login
+ *
+ * @todo return User
  */
-function findUser(?string $email, ?string $plainPassword): bool
+function findUser(?string $email, ?string $plainPassword): User
 {
     $data = readCredentials();
     
@@ -187,7 +199,7 @@ function isUserExisting (string $email): bool
     foreach($data as $credentials) {
         $credentialEmail = $credentials[0];
         if ($email === $credentialEmail) {
-                return true;
+            return true;
         }
     }
 
