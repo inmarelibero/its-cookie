@@ -92,7 +92,7 @@ function tryChangePassword(string $email, ?string $plainPassword)
  */
 function tryRegisterUser(?string $email, ?string $plainPassword): User
 {
-    //ERRORE PASSWORD TROPPO CORTA
+    // ERRORE PASSWORD TROPPO CORTA
     if ($plainPassword === null || strlen($plainPassword) < 3) {
         throw new Exception ("Password troppo corta");
     }
@@ -116,7 +116,7 @@ function tryRegisterUser(?string $email, ?string $plainPassword): User
  * @todo $users must be an array of User instances
  */
 function persistUsers(array $users)
-    {
+{
     $fp = fopen('users.csv', 'w');
     
     foreach($users as $user) {
@@ -131,8 +131,8 @@ function persistUsers(array $users)
  */
 function getTrimAndLowerCase(string $input): string
 {
-    $output = strtolower ($input);
-    $output = trim ($output);
+    $output = strtolower($input);
+    $output = trim($output);
 
     return $output;
 }
