@@ -7,14 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
     
     // prova ad effettuare il login
     try{
-        $loginResult = tryLogin($_POST['email'], $_POST['password']);
-    } catch(Exception $exception){
+        // $loginResult = tryLogin($_POST['email'], $_POST['password']);
+        $user = tryLogin($_POST['email'], $_POST['password']);
+    } catch(Exception $exception) {
         // inizializza la variabile $error contenente l'errore impostato sull'eccezione
         $error = $exception->getMessage();
     }
 
     // effettua il redirect se il login è andato a buon fine
-    if ($loginResult == true){
+    // if ($loginResult == true) {
+    if ($loginResult instanceof User) {
         redirectToHome();
     }
 }
