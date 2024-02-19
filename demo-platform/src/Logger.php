@@ -30,6 +30,6 @@ class Logger
         $fullMessage = '[' . $date .'] ' . $logMessage;
 
         // aggiungere il log al file logs.txt (creare il file se non esiste)
-        file_put_contents(__DIR__.'/logs.txt', $fullMessage.PHP_EOL , FILE_APPEND | LOCK_EX);
+        file_put_contents(__DIR__.'/../logs.txt', $fullMessage.PHP_EOL , FILE_APPEND | LOCK_EX);
     }
 }

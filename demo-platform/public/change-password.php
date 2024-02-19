@@ -1,13 +1,13 @@
 <?php 
-require_once('init.php');
+require_once('../init.php');
 
-redirectIfNotAuthenticated();
+$redirecter->redirectIfNotAuthenticated();
 
 // gestisce il form se la richiesta è in POST
 if ($_SERVER['REQUEST_METHOD'] ==='POST') {
     try {
         tryChangePassword(getEmailOfAuthenticatedUser(), $_POST['password']);
-        redirectToHome();
+        $redirecter->redirectToHome();
     } catch (Exception $e) {
         $error = $e->getMessage();
     }
@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
 
 <!doctype html>
 <html lang="en">
-    <?php require_once('head.php'); ?>
+    <?php require_once('../templates/_head.php'); ?>
 
     <body>
-        <?php require_once('menu.php'); ?>
+        <?php require_once('../templates/_menu.php'); ?>
 
         <div class="container">
             <div class="row">

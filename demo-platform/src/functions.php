@@ -7,11 +7,7 @@
  */
 function isUserAuthenticated(): bool
 {
-    if (empty($_SESSION['email'])) {
-        return false;
-    }
-
-    return true;
+    return !empty($_SESSION['email']);
 }
 
 /**
@@ -35,15 +31,13 @@ function tryLogin(?string $email, ?string $password): User
         throw new Exception("Email vuota");
     }
 
-    $emailFormatted = getTrimAndLowerCase($email);
-
-    $foundUser = findUser($emailFormatted, $password);
+    $foundUser = findUser($email, $password);
 
     // autentica l'utente usando la sessione
-    $_SESSION['email'] = $emailFormatted;
+    $_SESSION['email'] = $foundUser->getEmail();
 
     $logger = new Logger();
-    $logger->writeLogUserLogin($emailFormatted);
+    $logger->writeLogUserLogin($email);
 
     return $foundUser;
 }
@@ -100,15 +94,16 @@ function tryRegisterUser(?string $email, ?string $plainPassword): User
         throw new Exception ("Esiste già un utente con questa email");
     }
 
-    $data = readCredentials();
+    $users = readCredentials();
 
     // AGGIUNGO L'UTENTE
-    $data[] = [$email, md5($plainPassword)];
+    $newUser = new User($email, md5($plainPassword));
+    $users[] = $newUser;
 
     // MEMORIZZO I CAMBIAMENTI DEL FILE USER.CSV
-    persistUsers($data);
+    persistUsers($users);
 
-    return true;
+    return $newUser;
 }
 
 /**
@@ -116,13 +111,10 @@ function tryRegisterUser(?string $email, ?string $plainPassword): User
  */
 function persistUsers(array $users)
 {
-    $fp = fopen('users.csv', 'w');
+    $fp = fopen(__DIR__.'/../users.csv', 'w');
     
     foreach($users as $user) {
-        $line = [
-            $user->getEmail(),
-            $user->getEncryptedPassword(),
-        ];
+        $line = [$user->getEmail(), $user->getEncryptedPassword(),];
 
         fputcsv($fp, $line);
     }
@@ -146,7 +138,13 @@ function getTrimAndLowerCase(string $input): string
  *  */
 function readCredentials(): array
 {
-    $csvFile = file(__DIR__.'/users.csv');
+    $UsersCsvPath = __DIR__.'/../users.csv';
+    
+    if (!file_exists($UsersCsvPath)) {
+        return [];
+    }
+
+    $csvFile = file($UsersCsvPath);
     $data = [];
 
     foreach ($csvFile as $line) {
@@ -165,10 +163,12 @@ function readCredentials(): array
  */
 function findUser(?string $email, ?string $plainPassword): User
 {
+    $emailFormatted = getTrimAndLowerCase($email);
+
     $users = readCredentials();
     
     foreach($users as $user) {
-        if ($email === $user->getEmail()) {
+        if ($emailFormatted === $user->getEmail()) {
             if (md5($plainPassword) === $user->getEncryptedPassword()) {
                 return $user;
             }
@@ -195,41 +195,4 @@ function isUserExisting (string $email): bool
     }
 
     return false; 
-}
-
-/**
- * 
- */
-function redirectTo($path = 'homepage.php')
-{
-    header("Location: ".$path);
-    exit();
-}
-
-/**
- * @return void
- */
-function redirectToHome()
-{
-    redirectTo();
-}
-
-/**
- * 
- */
-function redirectIfNotAuthenticated()
-{
-    if (!isUserAuthenticated()) {
-        redirectTo('login.php');
-    }
-}
-
-/**
- *
- */
-function redirectIfAuthenticated($path = '/homepage.php')
-{
-    if (isUserAuthenticated()) {
-        redirectTo($path);
-    }
 }
