@@ -37,17 +37,15 @@ function tryLogin(?string $email, ?string $password): User
 
     $emailFormatted = getTrimAndLowerCase($email);
 
-    if (findUser($emailFormatted, $password) === true) {
-        // autentica l'utente usando la sessione
-        $_SESSION['email'] = $emailFormatted;
+    $foundUser = findUser($emailFormatted, $password);
 
-        $logger = new Logger();
-        $logger->writeLogUserLogin($emailFormatted);
+    // autentica l'utente usando la sessione
+    $_SESSION['email'] = $emailFormatted;
 
-        return true;
-    }
+    $logger = new Logger();
+    $logger->writeLogUserLogin($emailFormatted);
 
-    throw new Exception("Utente non trovato");
+    return $foundUser;
 }
 
 /**
@@ -178,7 +176,7 @@ function findUser(?string $email, ?string $plainPassword): User
         
         if ($email === $credentialEmail) {
             if (md5($plainPassword) === $encryptedCredentialPassword) {
-                return true;
+                return new User();
             }
 
             throw new Exception("Password sbagliata");
